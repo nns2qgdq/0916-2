@@ -1,6 +1,14 @@
 # ⏱️ Persona Clock (時鐘與個人儀表板)
 
-一個兼具**極致視覺美感**與**高度互動性**的個人化即時時鐘首頁。採用現代**磨砂玻璃質感（Glassmorphism）**、流暢微動畫與多款風格主題設計，支援自訂個人名稱、時段動態問候、12/24小時制切換與全螢幕專注時鐘。
+> 一個兼具**極致視覺美感**與**高度互動性**的個人化即時時鐘首頁。採用現代**磨砂玻璃質感（Glassmorphism）**、流暢微動畫與多款風格主題設計，支援自訂個人名稱、時段動態問候、12/24小時制切換與全螢幕專注時鐘。
+
+🔗 **線上展示網址 (Live Demo)**：[https://nns2qgdq.github.io/0916-2/](https://nns2qgdq.github.io/0916-2/)
+
+---
+
+## 📸 畫面預覽 (Preview)
+
+![Persona Clock 畫面快照](./assets/preview.png)
 
 ---
 
@@ -47,10 +55,12 @@
 
 ```bash
 L2Web/
+├── assets/
+│   └── preview.png  # 專案實例執行畫面快照
 ├── index.html       # 網頁結構、儀表板主卡片、頂部工具列與語意化排版
 ├── style.css        # 主題色彩變數、磨砂卡片陰影、背景光球漂浮動畫、響應式斷點
 ├── app.js           # 時間引擎、名稱編輯表單、主題切換邏輯、音效合成
-└── README.md        # 專案說明文件
+└── README.md        # 專案說明文件（包含 Live Demo 與截圖）
 ```
 
 ---
@@ -59,10 +69,15 @@ L2Web/
 
 無需安裝任何龐大的依賴套件，即可立即啟動與體驗！
 
-### 方法一：直接在瀏覽器開啟
+### 線上直接瀏覽
+點擊前往 GitHub Pages：[https://nns2qgdq.github.io/0916-2/](https://nns2qgdq.github.io/0916-2/)
+
+### 本地執行方式
+
+#### 方法一：直接在瀏覽器開啟
 直接在檔案總管或 Finder 雙擊 `index.html`，即可透過瀏覽器瀏覽。
 
-### 方法二：使用 Python 內建 HTTP 伺服器（推薦）
+#### 方法二：使用 Python 內建 HTTP 伺服器（推薦）
 在專案根目錄終端機執行：
 ```bash
 python3 -m http.server 8080
@@ -72,7 +87,7 @@ python3 -m http.server 8080
 http://localhost:8080
 ```
 
-### 方法三：使用 Node.js / npx
+#### 方法三：使用 Node.js / npx
 ```bash
 npx serve .
 ```
