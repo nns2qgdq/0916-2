@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>時鐘與個人首頁 | Persona Clock</title>
+  <meta name="description" content="精美個人化即時時鐘與問候儀表板，支援即時動態時間、自訂名稱、主題風格與全螢幕專注時鐘模式。">
+  <!-- Google Fonts: Outfit for display, JetBrains Mono for digital clock -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="aurora">
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+  <div class="ambient-glow glow-3" aria-hidden="true"></div>
+  <div class="mesh-overlay" aria-hidden="true"></div>
+
+  <main class="clock-container" id="clockDashboard">
+    <!-- Top Bar: Settings, Theme Selector & Fullscreen -->
+    <header class="top-bar">
+      <div class="status-indicator">
+        <span class="live-dot" id="liveDot"></span>
+        <span class="status-text" id="statusLabel">即時連線中 · LIVE</span>
+      </div>
+
+      <div class="action-controls">
+        <!-- Theme Dropdown / Selector -->
+        <div class="theme-selector-wrap">
+          <button class="icon-btn theme-btn" id="themeToggleBtn" title="更換主題風格" aria-label="更換主題風格">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <span class="btn-text">風格主題</span>
+          </button>
+          <div class="theme-menu" id="themeMenu">
+            <button class="theme-opt active" data-theme-val="aurora">
+              <span class="swatch aurora-swatch"></span> 極光星夜 (Aurora)
+            </button>
+            <button class="theme-opt" data-theme-val="cyberpunk">
+              <span class="swatch cyberpunk-swatch"></span> 霓虹龐克 (Cyberpunk)
+            </button>
+            <button class="theme-opt" data-theme-val="sunset">
+              <span class="swatch sunset-swatch"></span> 暖陽餘暉 (Sunset)
+            </button>
+            <button class="theme-opt" data-theme-val="minimal">
+              <span class="swatch minimal-swatch"></span> 極簡磨砂 (Minimal)
+            </button>
+          </div>
+        </div>
+
+        <!-- 12H / 24H Format Toggle -->
+        <button class="pill-toggle" id="formatToggleBtn" title="切換 12/24 小時制" aria-label="切換 12/24 小時制">
+          <span class="pill-label" id="formatLabel">24H</span>
+        </button>
+
+        <!-- Fullscreen Mode Toggle -->
+        <button class="icon-btn" id="fullscreenBtn" title="全螢幕專注時鐘" aria-label="全螢幕時鐘">
+          <svg id="fullscreenIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+            <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+            <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+            <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Glassmorphism Card -->
+    <div class="clock-card" id="mainCard">
+      <!-- Greeting & User Name Section -->
+      <section class="identity-section" aria-label="個人資訊與問候">
+        <div class="greeting-badge" id="greetingBadge">
+          <span class="greeting-icon" id="greetingIcon">👋</span>
+          <span class="greeting-text" id="greetingText">Good evening</span>
+        </div>
+
+        <div class="name-display-container">
+          <h1 class="user-title">
+            <span class="salutation-prefix" id="salutationPrefix">Hello,</span>
+            <span class="editable-name-wrap">
+              <span class="user-name" id="userNameDisplay" title="點擊即可編輯名字">Ryder</span>
+              <button class="edit-name-btn" id="editNameBtn" aria-label="編輯名字" title="修改名字">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                </svg>
+              </button>
+            </span>
+          </h1>
+
+          <!-- Interactive Inline Name Editor Form -->
+          <form class="name-editor-form hidden" id="nameEditorForm">
+            <input type="text" class="name-input" id="nameInput" placeholder="請輸入您的名字..." maxlength="32" autocomplete="off">
+            <div class="form-buttons">
+              <button type="submit" class="btn-save" id="saveNameBtn">儲存</button>
+              <button type="button" class="btn-cancel" id="cancelNameBtn">取消</button>
+            </div>
+          </form>
+        </div>
+
+        <p class="subtitle" id="subtitleMessage">祝您今日事事順心，專注創造美好事物。</p>
+      </section>
+
+      <!-- Digital Clock Display Section -->
+      <section class="time-display-section" aria-label="即時時間">
+        <div class="time-wrapper" id="timeWrapper">
+          <div class="digits-box">
+            <span class="time-digit" id="hoursDisplay">00</span>
+            <span class="time-colon" id="colonOne">:</span>
+            <span class="time-digit" id="minutesDisplay">00</span>
+            <span class="time-colon" id="colonTwo">:</span>
+            <span class="time-digit seconds-digit" id="secondsDisplay">00</span>
+          </div>
+          <div class="time-period hidden" id="periodDisplay">AM</div>
+        </div>
+
+        <!-- Seconds Progress Bar -->
+        <div class="second-progress-track" title="當前分鐘秒數進度">
+          <div class="second-progress-bar" id="secondProgressBar"></div>
+        </div>
+      </section>
+
+      <!-- Date & Geo/Timezone Badges -->
+      <footer class="meta-section">
+        <div class="meta-badge" id="dateBadge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+            <line x1="16" x2="16" y1="2" y2="6"></line>
+            <line x1="8" x2="8" y1="2" y2="6"></line>
+            <line x1="3" x2="21" y1="10" y2="10"></line>
+          </svg>
+          <span id="fullDateDisplay">載入中...</span>
+        </div>
+
+        <div class="meta-badge" id="dayBadge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="dayOfWeekDisplay">星期三</span>
+        </div>
+
+        <div class="meta-badge" id="timezoneBadge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" x2="22" y1="12" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span id="timezoneDisplay">Asia/Taipei</span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Quick Preferences Footer -->
+    <div class="bottom-tools">
+      <div class="toggle-group">
+        <label class="switch-item" for="secToggle">
+          <input type="checkbox" id="secToggle" checked>
+          <span class="switch-slider"></span>
+          <span class="switch-label">顯示秒數</span>
+        </label>
+        <label class="switch-item" for="chimeToggle">
+          <input type="checkbox" id="chimeToggle">
+          <span class="switch-slider"></span>
+          <span class="switch-label">整點微音提示</span>
+        </label>
+      </div>
+
+      <div class="time-since-loaded" id="uptimeCounter">
+        頁面運行時間：0 秒
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
